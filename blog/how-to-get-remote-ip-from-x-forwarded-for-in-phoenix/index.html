@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang='en-us'>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>How to get remote ip from x-forwarded-for header in Phoenix - Amit Gaur</title>
+    <meta name="description" content="In this I explain how to get correct remote ip in phoenix framework from x-forwarded-for. When the server is being proxied through something like nginx." />
+    <meta name="generator" content="Hugo 0.83.1" /><link rel="stylesheet" href="https://websymphony.net/css/styles.min.8c12baff9a161fa813b7e289fb6bb80b0868202e0c913f5a497a27bb55b5dca1.css">
+    <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+    <meta property="og:title" content="How to get remote ip from x-forwarded-for header in Phoenix" />
+<meta property="og:description" content="In this I explain how to get correct remote ip in phoenix framework from x-forwarded-for. When the server is being proxied through something like nginx." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://websymphony.net/blog/how-to-get-remote-ip-from-x-forwarded-for-in-phoenix/" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2020-10-10T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2020-10-10T00:00:00&#43;00:00" />
+
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="How to get remote ip from x-forwarded-for header in Phoenix"/>
+<meta name="twitter:description" content="In this I explain how to get correct remote ip in phoenix framework from x-forwarded-for. When the server is being proxied through something like nginx."/>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S9S2YMCHRG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-S9S2YMCHRG');
+</script>
+</head>
+
+<body class="flex flex-col min-h-screen font-sans antialiased bg-gray-100"><header class="w-full px-4 py-4 bg-white">
+    <nav class="container mx-auto flex items-center justify-between flex-wrap">
+        <a href="https://websymphony.net/"
+            class="text-gray-900 hover:bg-blue-100 px-6 py-1 rounded text-3xl font-extrabold">
+            Amit Gaur
+        </a>
+        <ul id="nav-menu" class="md:ml-auto flex flex-wrap items-center justify-center text-xl">
+            
+            <li>
+                <a href="https://websymphony.net/about/"
+                    class="text-blue-500 hover:bg-blue-100 ml-8 px-4 py-3 rounded">About</a>
+            </li>
+            
+            <li>
+                <a href="https://hipcv.com/r/uiDIwhldyC6bHgWJAz2Bn"
+                    class="text-blue-500 hover:bg-blue-100 ml-8 px-4 py-3 rounded" target="_blank">Resume</a>
+            </li>
+            
+            <li>
+                <a href="https://websymphony.net/blog/"
+                    class="text-blue-500 hover:bg-blue-100 ml-8 px-4 py-3 rounded">Blog</a>
+            </li>
+            
+            
+            <li>
+                <a href="https://websymphony.net/contact/"
+                    class="text-blue-500 hover:bg-blue-100 ml-8 px-4 py-3 rounded">Contact</a>
+            </li>
+            
+        </ul>
+    </nav>
+</header><main class="flex-1 container mt-16 mx-auto">
+
+
+
+
+<div class="grid gap-4 mb-10 lg:grid-cols-12">
+    <div class=" col-span-9">
+        <article class='p-8 prose bg-white rounded-md lg:prose-xl'>
+            <h1>How to get remote ip from x-forwarded-for header in Phoenix</h1>
+            <p>In my project <a href="https://hipcv.com">hipCV</a> there is a functionality which tracks visits for a publicly listed resume. For the server setup, I have multiple docker containers being load balanced via nginx proxy.</p>
+<p>To track the visits, we need the real remote IP address of the request. This IP address can then be used by geoip service, to provide the location.</p>
+<p>Since the requests to application server are being proxied, <code>conn.remote_ip</code> address is of the nginx itself and not the original request. The real IP address is also being returned by ngnix, but they come through in the headers <code>x-forwarded-for</code>.</p>
+<p>So, all we need to do is to parse this information from headers. To make it simple, I wrote a small utility module which does just that.</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir"><span style="color:#fb660a;font-weight:bold">defmodule</span> Utils.RemoteIp <span style="color:#fb660a;font-weight:bold">do</span>
+  <span style="color:#ff0086;font-weight:bold">@spec</span> get(Plug.Conn.t()) :: binary()
+  <span style="color:#fb660a;font-weight:bold">def</span> get(conn) <span style="color:#fb660a;font-weight:bold">do</span>
+    forwarded_for = conn
+      |&gt; Plug.Conn.get_req_header(<span style="color:#0086d2">&#34;x-forwarded-for&#34;</span>)
+      |&gt; List.first()
+
+    <span style="color:#fb660a;font-weight:bold">if</span> forwarded_for <span style="color:#fb660a;font-weight:bold">do</span>
+      forwarded_for
+      |&gt; String.split(<span style="color:#0086d2">&#34;,&#34;</span>)
+      |&gt; Enum.map(&amp;String.trim/<span style="color:#0086f7;font-weight:bold">1</span>)
+      |&gt; List.first()
+    <span style="color:#fb660a;font-weight:bold">else</span>
+      conn.remote_ip
+      |&gt; <span style="color:#0086d2">:inet_parse</span>.ntoa()
+      |&gt; to_string()
+    <span style="color:#fb660a;font-weight:bold">end</span>
+  <span style="color:#fb660a;font-weight:bold">end</span>
+<span style="color:#fb660a;font-weight:bold">end</span></code></pre></div>
+<p>Module is quite simple where it takes a <code>conn</code> struct as input and tries to get the value of the IP address out of <code>x-forwarded-for</code> header. If it is able to find it, it returns that, otherwise the original IP address of the request is returned.</p>
+<p>We can use this module anywhere in our controller as long as we have <code>conn</code> struct.</p>
+<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir">Utils.RemoteIp.get(conn)</code></pre></div>
+<p>There you have it, now you can get the real remote ip from proxied requests without any problems.</p>
+
+            <div class="mt-8 rounded-lg bg-purple-50">
+                <script src="https://f.convertkit.com/ckjs/ck.5.js"></script>
+<form action="https://app.convertkit.com/forms/1929010/subscriptions" class="seva-form formkit-form" method="post"
+  data-sv-form="1929010" data-uid="cac85c2d87" data-format="inline" data-version="5"
+  data-options="{&quot;settings&quot;:{&quot;after_subscribe&quot;:{&quot;action&quot;:&quot;message&quot;,&quot;success_message&quot;:&quot;Success! Now check your email to confirm your subscription.&quot;,&quot;redirect_url&quot;:&quot;&quot;},&quot;analytics&quot;:{&quot;google&quot;:null,&quot;facebook&quot;:null,&quot;segment&quot;:null,&quot;pinterest&quot;:null,&quot;sparkloop&quot;:null,&quot;googletagmanager&quot;:null},&quot;modal&quot;:{&quot;trigger&quot;:&quot;timer&quot;,&quot;scroll_percentage&quot;:null,&quot;timer&quot;:5,&quot;devices&quot;:&quot;all&quot;,&quot;show_once_every&quot;:15},&quot;powered_by&quot;:{&quot;show&quot;:true,&quot;url&quot;:&quot;https://convertkit.com?utm_source=dynamic&amp;utm_medium=referral&amp;utm_campaign=poweredby&amp;utm_content=form&quot;},&quot;recaptcha&quot;:{&quot;enabled&quot;:false},&quot;return_visitor&quot;:{&quot;action&quot;:&quot;show&quot;,&quot;custom_content&quot;:&quot;&quot;},&quot;slide_in&quot;:{&quot;display_in&quot;:&quot;bottom_right&quot;,&quot;trigger&quot;:&quot;timer&quot;,&quot;scroll_percentage&quot;:null,&quot;timer&quot;:5,&quot;devices&quot;:&quot;all&quot;,&quot;show_once_every&quot;:15},&quot;sticky_bar&quot;:{&quot;display_in&quot;:&quot;top&quot;,&quot;trigger&quot;:&quot;timer&quot;,&quot;scroll_percentage&quot;:null,&quot;timer&quot;:5,&quot;devices&quot;:&quot;all&quot;,&quot;show_once_every&quot;:15}},&quot;version&quot;:&quot;5&quot;}">
+  <div class="formkit-background" style="opacity: 0.2;"></div>
+  <div data-style="minimal">
+    <div class="formkit-header" data-element="header"
+      style="color: rgb(77, 77, 77); font-size: 27px; font-weight: 700;">
+      <h2>Want to hear when I write or build new stuff?</h2>
+    </div>
+    <div class="formkit-subheader" data-element="subheader" style="color: rgb(104, 104, 104); font-size: 18px;">
+      <p>Subscribe to get my latest content by email.</p>
+    </div>
+    <ul class="formkit-alert formkit-alert-error" data-element="errors" data-group="alert"></ul>
+    <div data-element="fields" data-stacked="false" class="seva-fields formkit-fields">
+      <div class="formkit-field"><input class="formkit-input" name="email_address" aria-label="Email Address"
+          placeholder="Email Address" required="" type="email"
+          style="color: rgb(0, 0, 0); border-color: rgb(227, 227, 227); border-radius: 4px; font-weight: 400;"></div>
+      <button data-element="submit" class="formkit-submit"
+        style="color: rgb(255, 255, 255); background-color: rgb(22, 119, 190); border-radius: 4px; font-weight: 400;">
+        <div class="formkit-spinner">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div><span class="">Subscribe</span>
+      </button>
+    </div>
+  </div>
+  <style>
+    .formkit-form[data-uid="cac85c2d87"] * {
+      box-sizing: border-box;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] legend {
+      border: none;
+      font-size: inherit;
+      margin-bottom: 10px;
+      padding: 0;
+      position: relative;
+      display: table;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] fieldset {
+      border: 0;
+      padding: 0.01em 0 0 0;
+      margin: 0;
+      min-width: 0;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] body:not(:-moz-handler-blocked) fieldset {
+      display: table-cell;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] h1,
+    .formkit-form[data-uid="cac85c2d87"] h2,
+    .formkit-form[data-uid="cac85c2d87"] h3,
+    .formkit-form[data-uid="cac85c2d87"] h4,
+    .formkit-form[data-uid="cac85c2d87"] h5,
+    .formkit-form[data-uid="cac85c2d87"] h6 {
+      color: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] p {
+      color: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] ol:not([template-default]),
+    .formkit-form[data-uid="cac85c2d87"] ul:not([template-default]),
+    .formkit-form[data-uid="cac85c2d87"] blockquote:not([template-default]) {
+      text-align: left;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] p:not([template-default]),
+    .formkit-form[data-uid="cac85c2d87"] hr:not([template-default]),
+    .formkit-form[data-uid="cac85c2d87"] blockquote:not([template-default]),
+    .formkit-form[data-uid="cac85c2d87"] ol:not([template-default]),
+    .formkit-form[data-uid="cac85c2d87"] ul:not([template-default]) {
+      color: inherit;
+      font-style: initial;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .ordered-list,
+    .formkit-form[data-uid="cac85c2d87"] .unordered-list {
+      list-style-position: outside !important;
+      padding-left: 1em;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .list-item {
+      padding-left: 0;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"][data-format="modal"] {
+      display: none;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"][data-format="slide in"] {
+      display: none;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"][data-format="sticky bar"] {
+      display: none;
+    }
+
+    .formkit-sticky-bar .formkit-form[data-uid="cac85c2d87"][data-format="sticky bar"] {
+      display: block;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-input,
+    .formkit-form[data-uid="cac85c2d87"] .formkit-select,
+    .formkit-form[data-uid="cac85c2d87"] .formkit-checkboxes {
+      width: 100%;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-button,
+    .formkit-form[data-uid="cac85c2d87"] .formkit-submit {
+      border: 0;
+      border-radius: 5px;
+      color: #ffffff;
+      cursor: pointer;
+      display: inline-block;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 15px;
+      overflow: hidden;
+      padding: 0;
+      position: relative;
+      vertical-align: middle;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-button:hover,
+    .formkit-form[data-uid="cac85c2d87"] .formkit-submit:hover,
+    .formkit-form[data-uid="cac85c2d87"] .formkit-button:focus,
+    .formkit-form[data-uid="cac85c2d87"] .formkit-submit:focus {
+      outline: none;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-button:hover>span,
+    .formkit-form[data-uid="cac85c2d87"] .formkit-submit:hover>span,
+    .formkit-form[data-uid="cac85c2d87"] .formkit-button:focus>span,
+    .formkit-form[data-uid="cac85c2d87"] .formkit-submit:focus>span {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-button>span,
+    .formkit-form[data-uid="cac85c2d87"] .formkit-submit>span {
+      display: block;
+      -webkit-transition: all 300ms ease-in-out;
+      transition: all 300ms ease-in-out;
+      padding: 12px 24px;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-input {
+      background: #ffffff;
+      font-size: 15px;
+      padding: 12px;
+      border: 1px solid #e3e3e3;
+      -webkit-flex: 1 0 auto;
+      -ms-flex: 1 0 auto;
+      flex: 1 0 auto;
+      line-height: 1.4;
+      margin: 0;
+      -webkit-transition: border-color ease-out 300ms;
+      transition: border-color ease-out 300ms;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-input:focus {
+      outline: none;
+      border-color: #1677be;
+      -webkit-transition: border-color ease 300ms;
+      transition: border-color ease 300ms;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-input::-webkit-input-placeholder {
+      color: inherit;
+      opacity: 0.8;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-input::-moz-placeholder {
+      color: inherit;
+      opacity: 0.8;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-input:-ms-input-placeholder {
+      color: inherit;
+      opacity: 0.8;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-input::placeholder {
+      color: inherit;
+      opacity: 0.8;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] [data-group="dropdown"] {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] [data-group="dropdown"]::before {
+      content: "";
+      top: calc(50% - 2.5px);
+      right: 10px;
+      position: absolute;
+      pointer-events: none;
+      border-color: #4f4f4f transparent transparent transparent;
+      border-style: solid;
+      border-width: 6px 6px 0 6px;
+      height: 0;
+      width: 0;
+      z-index: 999;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] [data-group="dropdown"] select {
+      height: auto;
+      width: 100%;
+      cursor: pointer;
+      color: #333333;
+      line-height: 1.4;
+      margin-bottom: 0;
+      padding: 0 6px;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      font-size: 15px;
+      padding: 12px;
+      padding-right: 25px;
+      border: 1px solid #e3e3e3;
+      background: #ffffff;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] [data-group="dropdown"] select:focus {
+      outline: none;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] [data-group="checkboxes"] {
+      text-align: left;
+      margin: 0;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] [data-group="checkboxes"] [data-group="checkbox"] {
+      margin-bottom: 10px;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] [data-group="checkboxes"] [data-group="checkbox"] * {
+      cursor: pointer;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] [data-group="checkboxes"] [data-group="checkbox"]:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] [data-group="checkboxes"] [data-group="checkbox"] input[type="checkbox"] {
+      display: none;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] [data-group="checkboxes"] [data-group="checkbox"] input[type="checkbox"]+label::after {
+      content: none;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] [data-group="checkboxes"] [data-group="checkbox"] input[type="checkbox"]:checked+label::after {
+      border-color: #ffffff;
+      content: "";
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] [data-group="checkboxes"] [data-group="checkbox"] input[type="checkbox"]:checked+label::before {
+      background: #10bf7a;
+      border-color: #10bf7a;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] [data-group="checkboxes"] [data-group="checkbox"] label {
+      position: relative;
+      display: inline-block;
+      padding-left: 28px;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] [data-group="checkboxes"] [data-group="checkbox"] label::before,
+    .formkit-form[data-uid="cac85c2d87"] [data-group="checkboxes"] [data-group="checkbox"] label::after {
+      position: absolute;
+      content: "";
+      display: inline-block;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] [data-group="checkboxes"] [data-group="checkbox"] label::before {
+      height: 16px;
+      width: 16px;
+      border: 1px solid #e3e3e3;
+      background: #ffffff;
+      left: 0px;
+      top: 3px;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] [data-group="checkboxes"] [data-group="checkbox"] label::after {
+      height: 4px;
+      width: 8px;
+      border-left: 2px solid #4d4d4d;
+      border-bottom: 2px solid #4d4d4d;
+      -webkit-transform: rotate(-45deg);
+      -ms-transform: rotate(-45deg);
+      transform: rotate(-45deg);
+      left: 4px;
+      top: 8px;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-alert {
+      background: #f9fafb;
+      border: 1px solid #e3e3e3;
+      border-radius: 5px;
+      -webkit-flex: 1 0 auto;
+      -ms-flex: 1 0 auto;
+      flex: 1 0 auto;
+      list-style: none;
+      margin: 25px auto;
+      padding: 12px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-alert:empty {
+      display: none;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-alert-success {
+      background: #d3fbeb;
+      border-color: #10bf7a;
+      color: #0c905c;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-alert-error {
+      background: #fde8e2;
+      border-color: #f2643b;
+      color: #ea4110;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-spinner {
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      height: 0px;
+      width: 0px;
+      margin: 0 auto;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 0px;
+      overflow: hidden;
+      text-align: center;
+      -webkit-transition: all 300ms ease-in-out;
+      transition: all 300ms ease-in-out;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-spinner>div {
+      margin: auto;
+      width: 12px;
+      height: 12px;
+      background-color: #fff;
+      opacity: 0.3;
+      border-radius: 100%;
+      display: inline-block;
+      -webkit-animation: formkit-bouncedelay-formkit-form-data-uid-cac85c2d87- 1.4s infinite ease-in-out both;
+      animation: formkit-bouncedelay-formkit-form-data-uid-cac85c2d87- 1.4s infinite ease-in-out both;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-spinner>div:nth-child(1) {
+      -webkit-animation-delay: -0.32s;
+      animation-delay: -0.32s;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-spinner>div:nth-child(2) {
+      -webkit-animation-delay: -0.16s;
+      animation-delay: -0.16s;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-submit[data-active] .formkit-spinner {
+      opacity: 1;
+      height: 100%;
+      width: 50px;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-submit[data-active] .formkit-spinner~span {
+      opacity: 0;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-powered-by[data-active="false"] {
+      opacity: 0.35;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-powered-by-convertkit-container {
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      width: 100%;
+      z-index: 5;
+      margin: 10px 0;
+      position: relative;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-powered-by-convertkit-container[data-active="false"] {
+      opacity: 0.35;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-powered-by-convertkit:hover,
+    .formkit-form[data-uid="cac85c2d87"] .formkit-powered-by-convertkit:focus {
+      background-color: #ffffff;
+      -webkit-transform: scale(1.025) perspective(1px);
+      -ms-transform: scale(1.025) perspective(1px);
+      transform: scale(1.025) perspective(1px);
+      opacity: 1;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-powered-by-convertkit[data-variant="dark"],
+    .formkit-form[data-uid="cac85c2d87"] .formkit-powered-by-convertkit[data-variant="light"] {
+      background-color: transparent;
+      border-color: transparent;
+      width: 166px;
+    }
+
+    @-webkit-keyframes formkit-bouncedelay-formkit-form-data-uid-cac85c2d87- {
+
+      0%,
+      80%,
+      100% {
+        -webkit-transform: scale(0);
+        -ms-transform: scale(0);
+        transform: scale(0);
+      }
+
+      40% {
+        -webkit-transform: scale(1);
+        -ms-transform: scale(1);
+        transform: scale(1);
+      }
+    }
+
+    @keyframes formkit-bouncedelay-formkit-form-data-uid-cac85c2d87- {
+
+      0%,
+      80%,
+      100% {
+        -webkit-transform: scale(0);
+        -ms-transform: scale(0);
+        transform: scale(0);
+      }
+
+      40% {
+        -webkit-transform: scale(1);
+        -ms-transform: scale(1);
+        transform: scale(1);
+      }
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] blockquote {
+      padding: 10px 20px;
+      margin: 0 0 20px;
+      border-left: 5px solid #e1e1e1;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-background {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.3;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] [data-style="minimal"] {
+      padding: 20px;
+      width: 100%;
+      position: relative;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-header {
+      margin: 0 0 27px 0;
+      text-align: center;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-subheader {
+      margin: 18px 0;
+      text-align: center;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-guarantee {
+      font-size: 13px;
+      margin: 10px 0 15px 0;
+      text-align: center;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-guarantee>p {
+      margin: 0;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-powered-by-convertkit-container {
+      margin-bottom: 0;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-fields {
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+      margin: 25px auto 0 auto;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-field {
+      min-width: 220px;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"] .formkit-field,
+    .formkit-form[data-uid="cac85c2d87"] .formkit-submit {
+      margin: 0 0 15px 0;
+      -webkit-flex: 1 0 100%;
+      -ms-flex: 1 0 100%;
+      flex: 1 0 100%;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"][min-width~="600"] [data-style="minimal"] {
+      padding: 40px;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"][min-width~="600"] .formkit-fields[data-stacked="false"] {
+      margin-left: -5px;
+      margin-right: -5px;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"][min-width~="600"] .formkit-fields[data-stacked="false"] .formkit-field,
+    .formkit-form[data-uid="cac85c2d87"][min-width~="600"] .formkit-fields[data-stacked="false"] .formkit-submit {
+      margin: 0 5px 15px 5px;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"][min-width~="600"] .formkit-fields[data-stacked="false"] .formkit-field {
+      -webkit-flex: 100 1 auto;
+      -ms-flex: 100 1 auto;
+      flex: 100 1 auto;
+    }
+
+    .formkit-form[data-uid="cac85c2d87"][min-width~="600"] .formkit-fields[data-stacked="false"] .formkit-submit {
+      -webkit-flex: 1 1 auto;
+      -ms-flex: 1 1 auto;
+      flex: 1 1 auto;
+    }
+  </style>
+</form>
+            </div>
+        </article>
+        
+        <section class="mt-4">
+  <div class="text-3xl font-bold">Comments</div>
+  <script src="https://utteranc.es/client.js" repo="websymphony/websymphony.github.io" issue-term="pathname"
+    label="Comment" theme="github-light" crossorigin="anonymous" async>
+    </script>
+</section>
+        
+    </div>
+    
+    <aside class="col-span-3">
+        <div class="p-4 bg-white mb-8">
+  <div class="text-xl mb-4">Published</div>
+  
+  <time class="text-gray-600 text-sm">October 10, 2020</time>
+</div>
+<div class="p-4 bg-white mb-8">
+  <div class="text-xl mb-4">Tags</div>
+  
+  
+<a href="https://websymphony.net/tags/how-to/" class="tag tag-default tag-how-to">how-to</a>
+
+<a href="https://websymphony.net/tags/phoenix-framework/" class="tag tag-default tag-phoenix-framework">phoenix-framework</a>
+
+<a href="https://websymphony.net/tags/nginx/" class="tag tag-default tag-nginx">nginx</a>
+
+  
+</div>
+<div class="p-4 bg-white mb-8">
+  <div class="text-xl mb-4">Stay in touch</div>
+  <div class="flex flex-col text-gray-600">
+    <div class="flex align-middle mb-4">
+      <a class="block w-6 h-6 mr-2" target="_blank" rel="noopener nofollow" title="Twitter"
+        href="https://twitter.com/websymphony">
+        <svg class="fill-current" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink">
+          <path
+            d="M32 6.078c-1.2.522-2.458.868-3.78 1.036 1.36-.812 2.398-2.088 2.886-3.626a13.11 13.11.0 01-4.16 1.588C25.742 3.794 24.026 3 22.154 3a6.56 6.56.0 00-6.556 6.562c0 .52.044 1.02.152 1.496-5.454-.266-10.28-2.88-13.522-6.862-.566.982-.898 2.106-.898 3.316a6.57 6.57.0 002.914 5.452 6.48 6.48.0 01-2.964-.808v.072c0 3.188 2.274 5.836 5.256 6.446-.534.146-1.116.216-1.72.216-.42.0-.844-.024-1.242-.112.85 2.598 3.262 4.508 6.13 4.57a13.18 13.18.0 01-8.134 2.798c-.538.0-1.054-.024-1.57-.1C2.906 27.93 6.35 29 10.064 29c12.072.0 18.672-10 18.672-18.668.0-.3-.01-.57-.024-.848C30.014 8.56 31.108 7.406 32 6.078z">
+          </path>
+        </svg>
+      </a>
+      <a target="_blank" rel="noopener nofollow" title="Twitter" href="https://twitter.com/websymphony">
+        <span>@websymphony</span>
+      </a>
+    </div>
+    <div class="flex align-middle">
+      <a class="block w-6 h-6 mr-2" target="_blank" rel="noopener nofollow" title="Github"
+        href="https://github.com/websymphony">
+        <svg class="fill-current" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink">
+          <path
+            d="M15.998.0C7.164.0.0 7.35.0 16.417.0 23.67 4.584 29.82 10.944 31.994c.8.15 1.092-.356 1.092-.79l-.022-2.792c-4.45.99-5.4-2.202-5.4-2.202-.726-1.896-1.776-2.4-1.776-2.4-1.454-1.018.108-.998.108-.998 1.606.117 2.45 1.693 2.45 1.693 1.428 2.507 3.746 1.784 4.658 1.363.144-1.06.558-1.784 1.016-2.195-3.552-.415-7.288-1.823-7.288-8.113.0-1.792.624-3.258 1.648-4.406-.166-.415-.714-2.085.156-4.344.0.0 1.344-.44 4.4 1.683 1.276-.364 2.644-.546 4.006-.552a14.98 14.98.0 014.006.554C23.062 6.37 24.404 6.8 24.404 6.8c.872 2.26.324 3.93.16 4.344 1.026 1.148 1.644 2.614 1.644 4.406.0 6.306-3.74 7.694-7.304 8.1.574.507 1.086 1.51 1.086 3.04l-.02 4.503c0 .44.288.95 1.1.788C27.42 29.817 32 23.667 32 16.417 32 7.35 24.836.0 15.998.0z">
+          </path>
+        </svg>
+      </a>
+      <a target="_blank" rel="noopener nofollow" title="Github" href="https://github.com/websymphony">
+        <span>@websymphony</span>
+      </a>
+    </div>
+  </div>
+</div>
+<div class="p-4 bg-white">
+  <a class="" href="https://hipcv.com/create-resume?utm_source=https://websymphony.net">
+    <img alt="Person looking into mirror and seeing professional version of themselves" class="py-4"
+      src="/hipcv/call_to_action.svg">
+    <p class="text-center pt-2 pb-8 text-xl font-extrabold">Looking for a job?</p>
+    <p class="pb-10 text-gray-700">Use my app <b>hipCV</b> to make resumes and cover letters that are tested and proven
+      to
+      fit the rules employers are looking for.</p>
+  </a>
+  <a class="tag tag-hipcv block text-center font-bold text-lg py-3"
+    href="https://hipcv.com/create-resume?utm_source=https://websymphony.net">
+    Create your resume now
+  </a>
+</div>
+    </aside>
+    
+</div>
+
+
+
+<div class="grid grid-cols-12 gap-4 my-10">
+  <div class="col-span-6">
+    
+    <a href="https://websymphony.net/blog/technical-interviews-take-home-projects/" class="block p-4 text-right bg-white rounded hover:bg-blue-100">
+      <div class="my-1 text-gray-600">Previous</div>
+      <span class="font-bold">
+        Technical interviews : Take home projects
+      </span>
+    </a>
+    
+  </div>
+  <div class="col-span-6">
+    
+    <a href="https://websymphony.net/blog/how-to-inject-props-into-dynamically-rendered-components-via-slot-in-stenciljs/" class="block p-4 bg-white rounded hover:bg-blue-100">
+      <div class="my-1 text-gray-600">Next</div>
+      <span class="font-bold">
+        How to inject props into dynamically rendered components via slot in stenciljs
+      </span>
+    </a>
+    
+  </div>
+</div>
+
+
+
+
+
+    </main>
+    <footer class="w-full p-16 bg-white text-gray-600">
+  <nav class="container mx-auto flex items-center justify-between flex-wrap">
+    <div class="m-auto flex flex-wrap items-center justify-center text-2xl">
+      <a class="mx-12 w-10 h-10" target="_blank" rel="noopener nofollow" title="Twitter"
+        href="https://twitter.com/websymphony"><svg class="fill-current" viewBox="0 0 32 32"
+          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <path
+            d="M32 6.078c-1.2.522-2.458.868-3.78 1.036 1.36-.812 2.398-2.088 2.886-3.626a13.11 13.11.0 01-4.16 1.588C25.742 3.794 24.026 3 22.154 3a6.56 6.56.0 00-6.556 6.562c0 .52.044 1.02.152 1.496-5.454-.266-10.28-2.88-13.522-6.862-.566.982-.898 2.106-.898 3.316a6.57 6.57.0 002.914 5.452 6.48 6.48.0 01-2.964-.808v.072c0 3.188 2.274 5.836 5.256 6.446-.534.146-1.116.216-1.72.216-.42.0-.844-.024-1.242-.112.85 2.598 3.262 4.508 6.13 4.57a13.18 13.18.0 01-8.134 2.798c-.538.0-1.054-.024-1.57-.1C2.906 27.93 6.35 29 10.064 29c12.072.0 18.672-10 18.672-18.668.0-.3-.01-.57-.024-.848C30.014 8.56 31.108 7.406 32 6.078z">
+          </path>
+        </svg></a>
+      <a class="mx-12 w-10 h-10" target="_blank" rel="noopener nofollow" title="Github"
+        href="https://github.com/websymphony"><svg class="fill-current" viewBox="0 0 32 32"
+          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <path
+            d="M15.998.0C7.164.0.0 7.35.0 16.417.0 23.67 4.584 29.82 10.944 31.994c.8.15 1.092-.356 1.092-.79l-.022-2.792c-4.45.99-5.4-2.202-5.4-2.202-.726-1.896-1.776-2.4-1.776-2.4-1.454-1.018.108-.998.108-.998 1.606.117 2.45 1.693 2.45 1.693 1.428 2.507 3.746 1.784 4.658 1.363.144-1.06.558-1.784 1.016-2.195-3.552-.415-7.288-1.823-7.288-8.113.0-1.792.624-3.258 1.648-4.406-.166-.415-.714-2.085.156-4.344.0.0 1.344-.44 4.4 1.683 1.276-.364 2.644-.546 4.006-.552a14.98 14.98.0 014.006.554C23.062 6.37 24.404 6.8 24.404 6.8c.872 2.26.324 3.93.16 4.344 1.026 1.148 1.644 2.614 1.644 4.406.0 6.306-3.74 7.694-7.304 8.1.574.507 1.086 1.51 1.086 3.04l-.02 4.503c0 .44.288.95 1.1.788C27.42 29.817 32 23.667 32 16.417 32 7.35 24.836.0 15.998.0z">
+          </path>
+        </svg></a>
+      <a class="mx-12 w-10 h-10" target="_blank" rel="noopener nofollow" title="Instagram"
+        href="https://instagram.com/websymphony"><svg class="fill-current" viewBox="0 0 32 32"
+          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <path
+            d="M4 32h24c2.258.0 4-1.742 4-4V4c0-2.26-1.742-4-4-4H4C1.74.0.0 1.74.0 4v24c0 2.258 1.74 4 4 4zM22 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zm-5.977 4.714c3.55.0 6.425 2.787 6.425 6.226s-2.876 6.226-6.425 6.226S9.6 19.377 9.6 15.94s2.878-6.226 6.423-6.226zM4 13l2.493.542c-.274.89-.413 1.815-.413 2.745.0 5.318 4.454 9.634 9.943 9.634s9.944-4.315 9.944-9.634c0-.955-.145-1.875-.412-2.745L28 13v14c0 .7-.3 1-1 1H5c-.7.0-1-.3-1-1V13z">
+          </path>
+        </svg></a>
+    </div>
+  </nav>
+</footer></body>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-180258293-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</html>

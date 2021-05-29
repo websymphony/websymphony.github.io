@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>nginx on Amit Gaur</title>
+    <link>https://websymphony.net/tags/nginx/</link>
+    <description>Recent content in nginx on Amit Gaur</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 10 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://websymphony.net/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to get remote ip from x-forwarded-for header in Phoenix</title>
+      <link>https://websymphony.net/blog/how-to-get-remote-ip-from-x-forwarded-for-in-phoenix/</link>
+      <pubDate>Sat, 10 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://websymphony.net/blog/how-to-get-remote-ip-from-x-forwarded-for-in-phoenix/</guid>
+      <description>In this I explain how to get correct remote ip in phoenix framework from x-forwarded-for. When the server is being proxied through something like nginx.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>arc on Amit Gaur</title>
+    <link>https://websymphony.net/tags/arc/</link>
+    <description>Recent content in arc on Amit Gaur</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 20 Nov 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://websymphony.net/tags/arc/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to use Digital Ocean Spaces for Arc Ecto file uploads</title>
+      <link>https://websymphony.net/blog/how-to-use-digital-ocean-spaces-for-arc-ecto-file-uploads/</link>
+      <pubDate>Fri, 20 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://websymphony.net/blog/how-to-use-digital-ocean-spaces-for-arc-ecto-file-uploads/</guid>
+      <description>In this I explain how to use Digital Ocean spaces instead of Amazon S3 for uploading files using Arc Ecto</description>
+    </item>
+    
+  </channel>
+</rss>

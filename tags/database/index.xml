@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>database on Amit Gaur</title>
+    <link>https://websymphony.net/tags/database/</link>
+    <description>Recent content in database on Amit Gaur</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 23 Nov 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://websymphony.net/tags/database/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to fix Postgres sequences</title>
+      <link>https://websymphony.net/blog/how-to-fix-postgres-sequences/</link>
+      <pubDate>Mon, 23 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://websymphony.net/blog/how-to-fix-postgres-sequences/</guid>
+      <description>In this I go over how to fix postgres sequences.</description>
+    </item>
+    
+    <item>
+      <title>Fixing utf8 encoding issue in Postgres</title>
+      <link>https://websymphony.net/blog/fixing-utf8-encoding-issue-in-postgres/</link>
+      <pubDate>Sat, 20 Oct 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://websymphony.net/blog/fixing-utf8-encoding-issue-in-postgres/</guid>
+      <description>In this post, I setup Postgres for rails on an Ubuntu machine. And fix utf8 encoding issue.</description>
+    </item>
+    
+  </channel>
+</rss>

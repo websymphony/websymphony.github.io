@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Blog on Amit Gaur</title>
+    <link>https://websymphony.net/blog/</link>
+    <description>Recent content in Blog on Amit Gaur</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 28 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://websymphony.net/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Paraphrasing Tool</title>
+      <link>https://websymphony.net/blog/paraphrasing-tool/</link>
+      <pubDate>Mon, 28 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://websymphony.net/blog/paraphrasing-tool/</guid>
+      <description>In this I discuss the building blocks for the paraphrasing tool.</description>
+    </item>
+    
+    <item>
+      <title>How to fix Postgres sequences</title>
+      <link>https://websymphony.net/blog/how-to-fix-postgres-sequences/</link>
+      <pubDate>Mon, 23 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://websymphony.net/blog/how-to-fix-postgres-sequences/</guid>
+      <description>In this I go over how to fix postgres sequences.</description>
+    </item>
+    
+    <item>
+      <title>How to use Digital Ocean Spaces for Arc Ecto file uploads</title>
+      <link>https://websymphony.net/blog/how-to-use-digital-ocean-spaces-for-arc-ecto-file-uploads/</link>
+      <pubDate>Fri, 20 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://websymphony.net/blog/how-to-use-digital-ocean-spaces-for-arc-ecto-file-uploads/</guid>
+      <description>In this I explain how to use Digital Ocean spaces instead of Amazon S3 for uploading files using Arc Ecto</description>
+    </item>
+    
+    <item>
+      <title>How to Refresh Tokens in Cognito using Amplify JS</title>
+      <link>https://websymphony.net/blog/how-to-refresh-tokens-cognito-amplify-js/</link>
+      <pubDate>Mon, 16 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://websymphony.net/blog/how-to-refresh-tokens-cognito-amplify-js/</guid>
+      <description>In this I explain how to refresh idToken and accessToken in Cognito using Amplify JS</description>
+    </item>
+    
+    <item>
+      <title>How to inject props into dynamically rendered components via slot in stenciljs</title>
+      <link>https://websymphony.net/blog/how-to-inject-props-into-dynamically-rendered-components-via-slot-in-stenciljs/</link>
+      <pubDate>Fri, 23 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://websymphony.net/blog/how-to-inject-props-into-dynamically-rendered-components-via-slot-in-stenciljs/</guid>
+      <description>In this I explain how to pass props to components that are rendered dynamically in stencil js using Slot tag.</description>
+    </item>
+    
+    <item>
+      <title>How to get remote ip from x-forwarded-for header in Phoenix</title>
+      <link>https://websymphony.net/blog/how-to-get-remote-ip-from-x-forwarded-for-in-phoenix/</link>
+      <pubDate>Sat, 10 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://websymphony.net/blog/how-to-get-remote-ip-from-x-forwarded-for-in-phoenix/</guid>
+      <description>In this I explain how to get correct remote ip in phoenix framework from x-forwarded-for. When the server is being proxied through something like nginx.</description>
+    </item>
+    
+    <item>
+      <title>Technical interviews : Take home projects</title>
+      <link>https://websymphony.net/blog/technical-interviews-take-home-projects/</link>
+      <pubDate>Sat, 13 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://websymphony.net/blog/technical-interviews-take-home-projects/</guid>
+      <description>In this, I discuss take home assignments or projects for technical hiring.</description>
+    </item>
+    
+    <item>
+      <title>How to use UUIDs as Primary Key with ecto</title>
+      <link>https://websymphony.net/blog/how-to-use-uuid-as-primary-key-in-ecto-phoenix/</link>
+      <pubDate>Sun, 28 Jun 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://websymphony.net/blog/how-to-use-uuid-as-primary-key-in-ecto-phoenix/</guid>
+      <description>In this, I explain how to use UUIDs as primary key instead of IDs when using ecto with Phoenix Framework.</description>
+    </item>
+    
+    <item>
+      <title>Fixing utf8 encoding issue in Postgres</title>
+      <link>https://websymphony.net/blog/fixing-utf8-encoding-issue-in-postgres/</link>
+      <pubDate>Sat, 20 Oct 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://websymphony.net/blog/fixing-utf8-encoding-issue-in-postgres/</guid>
+      <description>In this post, I setup Postgres for rails on an Ubuntu machine. And fix utf8 encoding issue.</description>
+    </item>
+    
+  </channel>
+</rss>

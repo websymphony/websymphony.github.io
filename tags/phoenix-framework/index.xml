@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>phoenix-framework on Amit Gaur</title>
+    <link>https://websymphony.net/tags/phoenix-framework/</link>
+    <description>Recent content in phoenix-framework on Amit Gaur</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 20 Nov 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://websymphony.net/tags/phoenix-framework/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to use Digital Ocean Spaces for Arc Ecto file uploads</title>
+      <link>https://websymphony.net/blog/how-to-use-digital-ocean-spaces-for-arc-ecto-file-uploads/</link>
+      <pubDate>Fri, 20 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://websymphony.net/blog/how-to-use-digital-ocean-spaces-for-arc-ecto-file-uploads/</guid>
+      <description>In this I explain how to use Digital Ocean spaces instead of Amazon S3 for uploading files using Arc Ecto</description>
+    </item>
+    
+    <item>
+      <title>How to get remote ip from x-forwarded-for header in Phoenix</title>
+      <link>https://websymphony.net/blog/how-to-get-remote-ip-from-x-forwarded-for-in-phoenix/</link>
+      <pubDate>Sat, 10 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://websymphony.net/blog/how-to-get-remote-ip-from-x-forwarded-for-in-phoenix/</guid>
+      <description>In this I explain how to get correct remote ip in phoenix framework from x-forwarded-for. When the server is being proxied through something like nginx.</description>
+    </item>
+    
+    <item>
+      <title>How to use UUIDs as Primary Key with ecto</title>
+      <link>https://websymphony.net/blog/how-to-use-uuid-as-primary-key-in-ecto-phoenix/</link>
+      <pubDate>Sun, 28 Jun 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://websymphony.net/blog/how-to-use-uuid-as-primary-key-in-ecto-phoenix/</guid>
+      <description>In this, I explain how to use UUIDs as primary key instead of IDs when using ecto with Phoenix Framework.</description>
+    </item>
+    
+  </channel>
+</rss>

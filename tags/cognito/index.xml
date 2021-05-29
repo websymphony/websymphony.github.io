@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>cognito on Amit Gaur</title>
+    <link>https://websymphony.net/tags/cognito/</link>
+    <description>Recent content in cognito on Amit Gaur</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 16 Nov 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://websymphony.net/tags/cognito/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Refresh Tokens in Cognito using Amplify JS</title>
+      <link>https://websymphony.net/blog/how-to-refresh-tokens-cognito-amplify-js/</link>
+      <pubDate>Mon, 16 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://websymphony.net/blog/how-to-refresh-tokens-cognito-amplify-js/</guid>
+      <description>In this I explain how to refresh idToken and accessToken in Cognito using Amplify JS</description>
+    </item>
+    
+  </channel>
+</rss>
