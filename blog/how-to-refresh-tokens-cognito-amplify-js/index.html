@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>How to Refresh Tokens in Cognito using Amplify JS - Amit Gaur</title>
     <meta name="description" content="In this I explain how to refresh idToken and accessToken in Cognito using Amplify JS" />
-    <meta name="generator" content="Hugo 0.83.1" /><link rel="stylesheet" href="https://websymphony.net/css/styles.min.8c12baff9a161fa813b7e289fb6bb80b0868202e0c913f5a497a27bb55b5dca1.css">
+    <meta name="generator" content="Hugo 0.93.2" />
+
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css"><link rel="stylesheet" href="/static/css/main.cda12e029b6e29672ff756dfdce13f1e20e6f2f930639144245dff7cf6ac706b.css">
+
     <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
     <meta property="og:title" content="How to Refresh Tokens in Cognito using Amplify JS" />
 <meta property="og:description" content="In this I explain how to refresh idToken and accessToken in Cognito using Amplify JS" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://websymphony.net/blog/how-to-refresh-tokens-cognito-amplify-js/" /><meta property="article:section" content="blog" />
-<meta property="article:published_time" content="2020-11-16T00:00:00&#43;00:00" />
-<meta property="article:modified_time" content="2020-11-16T00:00:00&#43;00:00" />
+<meta property="article:published_time" content="2020-11-16T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-11-16T00:00:00+00:00" />
 
 
     <meta name="twitter:card" content="summary"/>
@@ -70,11 +73,11 @@
         <article class='p-8 prose bg-white rounded-md lg:prose-xl'>
             <h1>How to Refresh Tokens in Cognito using Amplify JS</h1>
             <p>If you are using <a href="https://aws.amazon.com/cognito/">Amazon Cognito</a> via Amplify JS and if you need to refresh tokens, then all you need to do is following:</p>
-<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#fb660a;font-weight:bold">import</span> { Auth } from <span style="color:#0086d2">&#39;aws-amplify&#39;</span>;
-
-Auth.currentSession()
-  .then(data =&gt; console.log(data))
-  .<span style="color:#fb660a;font-weight:bold">catch</span>(err =&gt; console.log(err));</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#fb660a;font-weight:bold">import</span> { Auth } from <span style="color:#0086d2">&#39;aws-amplify&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Auth.currentSession()
+</span></span><span style="display:flex;"><span>  .then(data =&gt; console.log(data))
+</span></span><span style="display:flex;"><span>  .<span style="color:#fb660a;font-weight:bold">catch</span>(err =&gt; console.log(err));</span></span></code></pre></div>
 <p>Above snippet is from the <a href="https://docs.amplify.aws/lib/auth/manageusers/q/platform/js#retrieve-current-session">Amplify JS documentation</a>.</p>
 <p><code>Auth.currentSession()</code> will return a <code>CognitoUserSession</code> object that contains JWT <code>accessToken</code>, <code>idToken</code>, and <code>refreshToken</code>.</p>
 <p>This method will automatically refresh the <code>accessToken</code> and <code>idToken</code> if tokens are expired and a valid <code>refreshToken</code> is presented. So if you need to refresh the session, using this method is the easiest way to do it.</p>
@@ -659,13 +662,9 @@ Auth.currentSession()
     </div>
     
     <aside class="col-span-3">
-        <div class="p-4 bg-white mb-8">
-  <div class="text-xl mb-4">Published</div>
-  
-  <time class="text-gray-600 text-sm">November 16, 2020</time>
-</div>
-<div class="p-4 bg-white mb-8">
-  <div class="text-xl mb-4">Tags</div>
+        
+<div class="p-4 mb-8 bg-white">
+  <div class="mb-4 text-xl">Tags</div>
   
   
 <a href="https://websymphony.net/tags/how-to/" class="tag tag-default tag-how-to">how-to</a>
@@ -678,10 +677,10 @@ Auth.currentSession()
 
   
 </div>
-<div class="p-4 bg-white mb-8">
-  <div class="text-xl mb-4">Stay in touch</div>
+<div class="p-4 mb-8 bg-white">
+  <div class="mb-4 text-xl">Stay in touch</div>
   <div class="flex flex-col text-gray-600">
-    <div class="flex align-middle mb-4">
+    <div class="flex mb-4 align-middle">
       <a class="block w-6 h-6 mr-2" target="_blank" rel="noopener nofollow" title="Twitter"
         href="https://twitter.com/websymphony">
         <svg class="fill-current" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"
@@ -715,12 +714,12 @@ Auth.currentSession()
   <a class="" href="https://hipcv.com/create-resume?utm_source=https://websymphony.net">
     <img alt="Person looking into mirror and seeing professional version of themselves" class="py-4"
       src="/hipcv/call_to_action.svg">
-    <p class="text-center pt-2 pb-8 text-xl font-extrabold">Looking for a job?</p>
+    <p class="pt-2 pb-8 text-xl font-extrabold text-center">Looking for a job?</p>
     <p class="pb-10 text-gray-700">Use my app <b>hipCV</b> to make resumes and cover letters that are tested and proven
       to
       fit the rules employers are looking for.</p>
   </a>
-  <a class="tag tag-hipcv block text-center font-bold text-lg py-3"
+  <a class="block py-3 text-lg font-bold text-center tag tag-hipcv"
     href="https://hipcv.com/create-resume?utm_source=https://websymphony.net">
     Create your resume now
   </a>

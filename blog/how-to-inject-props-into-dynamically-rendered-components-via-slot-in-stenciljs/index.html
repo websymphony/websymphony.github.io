@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>How to inject props into dynamically rendered components via slot in stenciljs - Amit Gaur</title>
     <meta name="description" content="In this I explain how to pass props to components that are rendered dynamically in stencil js using Slot tag." />
-    <meta name="generator" content="Hugo 0.83.1" /><link rel="stylesheet" href="https://websymphony.net/css/styles.min.8c12baff9a161fa813b7e289fb6bb80b0868202e0c913f5a497a27bb55b5dca1.css">
+    <meta name="generator" content="Hugo 0.93.2" />
+
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css"><link rel="stylesheet" href="/static/css/main.cda12e029b6e29672ff756dfdce13f1e20e6f2f930639144245dff7cf6ac706b.css">
+
     <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
     <meta property="og:title" content="How to inject props into dynamically rendered components via slot in stenciljs" />
 <meta property="og:description" content="In this I explain how to pass props to components that are rendered dynamically in stencil js using Slot tag." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://websymphony.net/blog/how-to-inject-props-into-dynamically-rendered-components-via-slot-in-stenciljs/" /><meta property="article:section" content="blog" />
-<meta property="article:published_time" content="2020-10-23T00:00:00&#43;00:00" />
-<meta property="article:modified_time" content="2020-10-23T00:00:00&#43;00:00" />
+<meta property="article:published_time" content="2020-10-23T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-10-23T00:00:00+00:00" />
 
 
     <meta name="twitter:card" content="summary"/>
@@ -71,64 +74,64 @@
             <h1>How to inject props into dynamically rendered components via slot in stenciljs</h1>
             <p>In <a href="https://stenciljs.com/">Stencil</a>, from a parent component you might have a need to pass <code>props</code> into components that are going to be dynamically rendered using <code>Slot</code> tag.</p>
 <p>In our example we have a root component that needs to pass a <code>config</code> prop to all the components that&rsquo;ll get rendered inside <code>root-container</code>.</p>
-<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#fb660a;font-weight:bold">import</span> { Component, Element, h, Prop } <span style="color:#fb660a;font-weight:bold">from</span> <span style="color:#0086d2">&#39;@stencil/core&#39;</span>;
-
-<span style="color:#fb660a;font-weight:bold">@Component</span>({
-  tag: <span style="color:#0086d2">&#39;root-component&#39;</span>,
-})
-<span style="color:#fb660a;font-weight:bold">export</span> <span style="color:#fb660a;font-weight:bold">class</span> RootComponent {
-  <span style="color:#fb660a;font-weight:bold">@Element</span>() el: <span style="color:#cdcaa9;font-weight:bold">HTMLElement</span>;
-  <span style="color:#fb660a;font-weight:bold">@Prop</span>() config: <span style="color:#cdcaa9;font-weight:bold">any</span>;
-
-  componentWillLoad() {
-    <span style="color:#080;background-color:#0f140f;font-style:italic">// Inject config in all Slotted elements
-</span><span style="color:#080;background-color:#0f140f;font-style:italic"></span>    <span style="color:#fb660a;font-weight:bold">this</span>.el.childNodes.forEach(element =&gt; {
-      element[<span style="color:#0086d2">&#34;config&#34;</span>] = <span style="color:#fb660a;font-weight:bold">this</span>.config;
-    });
-  }
-
-  render() {
-    <span style="color:#fb660a;font-weight:bold">return</span> (
-      &lt;<span style="color:#fb660a;font-weight:bold">div</span> <span style="color:#ff0086;font-weight:bold">class</span>=<span style="color:#0086d2">&#34;root-container&#34;</span>&gt;
-        &lt;<span style="color:#fb660a;font-weight:bold">slot</span> /&gt;
-      &lt;/<span style="color:#fb660a;font-weight:bold">div</span>&gt;
-    );
-  }
-}</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span><span style="color:#fb660a;font-weight:bold">import</span> { Component, Element, h, Prop } <span style="color:#fb660a;font-weight:bold">from</span> <span style="color:#0086d2">&#39;@stencil/core&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#fb660a;font-weight:bold">@Component</span>({
+</span></span><span style="display:flex;"><span>  tag: <span style="color:#0086d2">&#39;root-component&#39;</span>,
+</span></span><span style="display:flex;"><span>})
+</span></span><span style="display:flex;"><span><span style="color:#fb660a;font-weight:bold">export</span> <span style="color:#fb660a;font-weight:bold">class</span> RootComponent {
+</span></span><span style="display:flex;"><span>  <span style="color:#fb660a;font-weight:bold">@Element</span>() el: <span style="color:#cdcaa9;font-weight:bold">HTMLElement</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#fb660a;font-weight:bold">@Prop</span>() config: <span style="color:#cdcaa9;font-weight:bold">any</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  componentWillLoad() {
+</span></span><span style="display:flex;"><span>    <span style="color:#080;background-color:#0f140f;font-style:italic">// Inject config in all Slotted elements
+</span></span></span><span style="display:flex;"><span><span style="color:#080;background-color:#0f140f;font-style:italic"></span>    <span style="color:#fb660a;font-weight:bold">this</span>.el.childNodes.forEach(element =&gt; {
+</span></span><span style="display:flex;"><span>      element[<span style="color:#0086d2">&#34;config&#34;</span>] = <span style="color:#fb660a;font-weight:bold">this</span>.config;
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  render() {
+</span></span><span style="display:flex;"><span>    <span style="color:#fb660a;font-weight:bold">return</span> (
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#fb660a;font-weight:bold">div</span> <span style="color:#ff0086;font-weight:bold">class</span>=<span style="color:#0086d2">&#34;root-container&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#fb660a;font-weight:bold">slot</span> /&gt;
+</span></span><span style="display:flex;"><span>      &lt;/<span style="color:#fb660a;font-weight:bold">div</span>&gt;
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div>
 <p>A child component that is going to use the <code>config</code> for its working.</p>
-<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript"><span style="color:#fb660a;font-weight:bold">import</span> { Component, h, Prop } <span style="color:#fb660a;font-weight:bold">from</span> <span style="color:#0086d2">&#39;@stencil/core&#39;</span>;
-
-<span style="color:#fb660a;font-weight:bold">@Component</span>({
-  tag: <span style="color:#0086d2">&#39;child-component&#39;</span>,
-})
-<span style="color:#fb660a;font-weight:bold">export</span> <span style="color:#fb660a;font-weight:bold">class</span> ChildComponent {
-  <span style="color:#fb660a;font-weight:bold">@Prop</span>() config: <span style="color:#cdcaa9;font-weight:bold">any</span>;
-
-  componentWillLoad() {
-    <span style="color:#080;background-color:#0f140f;font-style:italic">// This component will get access
-</span><span style="color:#080;background-color:#0f140f;font-style:italic"></span>    <span style="color:#080;background-color:#0f140f;font-style:italic">// to config if slotted inside root.
-</span><span style="color:#080;background-color:#0f140f;font-style:italic"></span>    console.log(<span style="color:#fb660a;font-weight:bold">this</span>.config);
-  }
-
-  render() {
-    <span style="color:#fb660a;font-weight:bold">return</span> (
-      &lt;<span style="color:#fb660a;font-weight:bold">div</span> <span style="color:#ff0086;font-weight:bold">class</span>=<span style="color:#0086d2">&#34;child-container&#34;</span>&gt;
-        &lt;<span style="color:#fb660a;font-weight:bold">h1</span>&gt;Child component&lt;/<span style="color:#fb660a;font-weight:bold">h1</span>&gt;
-      &lt;/<span style="color:#fb660a;font-weight:bold">div</span>&gt;
-    );
-  }
-}</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span><span style="color:#fb660a;font-weight:bold">import</span> { Component, h, Prop } <span style="color:#fb660a;font-weight:bold">from</span> <span style="color:#0086d2">&#39;@stencil/core&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#fb660a;font-weight:bold">@Component</span>({
+</span></span><span style="display:flex;"><span>  tag: <span style="color:#0086d2">&#39;child-component&#39;</span>,
+</span></span><span style="display:flex;"><span>})
+</span></span><span style="display:flex;"><span><span style="color:#fb660a;font-weight:bold">export</span> <span style="color:#fb660a;font-weight:bold">class</span> ChildComponent {
+</span></span><span style="display:flex;"><span>  <span style="color:#fb660a;font-weight:bold">@Prop</span>() config: <span style="color:#cdcaa9;font-weight:bold">any</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  componentWillLoad() {
+</span></span><span style="display:flex;"><span>    <span style="color:#080;background-color:#0f140f;font-style:italic">// This component will get access
+</span></span></span><span style="display:flex;"><span><span style="color:#080;background-color:#0f140f;font-style:italic"></span>    <span style="color:#080;background-color:#0f140f;font-style:italic">// to config if slotted inside root.
+</span></span></span><span style="display:flex;"><span><span style="color:#080;background-color:#0f140f;font-style:italic"></span>    console.log(<span style="color:#fb660a;font-weight:bold">this</span>.config);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  render() {
+</span></span><span style="display:flex;"><span>    <span style="color:#fb660a;font-weight:bold">return</span> (
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#fb660a;font-weight:bold">div</span> <span style="color:#ff0086;font-weight:bold">class</span>=<span style="color:#0086d2">&#34;child-container&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#fb660a;font-weight:bold">h1</span>&gt;Child component&lt;/<span style="color:#fb660a;font-weight:bold">h1</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;/<span style="color:#fb660a;font-weight:bold">div</span>&gt;
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div>
 <p>Usage:</p>
-<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-typescript" data-lang="typescript">  <span style="color:#080;background-color:#0f140f;font-style:italic">// my-component.tsx
-</span><span style="color:#080;background-color:#0f140f;font-style:italic"></span>
-  render() {
-    <span style="color:#fb660a;font-weight:bold">return</span> (
-      &lt;<span style="color:#fb660a;font-weight:bold">root</span>-<span style="color:#ff0086;font-weight:bold">component</span> <span style="color:#ff0086;font-weight:bold">config</span>={{data: {a: <span style="color:#cdcaa9;font-weight:bold">1</span>}}}&gt;
-        &lt;<span style="color:#fb660a;font-weight:bold">child</span>-<span style="color:#ff0086;font-weight:bold">component</span> /&gt;
-        &lt;<span style="color:#fb660a;font-weight:bold">child</span>-<span style="color:#ff0086;font-weight:bold">component</span> /&gt;
-      &lt;/root-component&gt;
-    );
-  }</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span>  <span style="color:#080;background-color:#0f140f;font-style:italic">// my-component.tsx
+</span></span></span><span style="display:flex;"><span><span style="color:#080;background-color:#0f140f;font-style:italic"></span>
+</span></span><span style="display:flex;"><span>  render() {
+</span></span><span style="display:flex;"><span>    <span style="color:#fb660a;font-weight:bold">return</span> (
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#fb660a;font-weight:bold">root</span>-<span style="color:#ff0086;font-weight:bold">component</span> <span style="color:#ff0086;font-weight:bold">config</span>={{data: {a: <span style="color:#cdcaa9;font-weight:bold">1</span>}}}&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#fb660a;font-weight:bold">child</span>-<span style="color:#ff0086;font-weight:bold">component</span> /&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#fb660a;font-weight:bold">child</span>-<span style="color:#ff0086;font-weight:bold">component</span> /&gt;
+</span></span><span style="display:flex;"><span>      &lt;/root-component&gt;
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>  }</span></span></code></pre></div>
 
             <div class="mt-8 rounded-lg bg-purple-50">
                 <script src="https://f.convertkit.com/ckjs/ck.5.js"></script>
@@ -710,13 +713,9 @@
     </div>
     
     <aside class="col-span-3">
-        <div class="p-4 bg-white mb-8">
-  <div class="text-xl mb-4">Published</div>
-  
-  <time class="text-gray-600 text-sm">October 23, 2020</time>
-</div>
-<div class="p-4 bg-white mb-8">
-  <div class="text-xl mb-4">Tags</div>
+        
+<div class="p-4 mb-8 bg-white">
+  <div class="mb-4 text-xl">Tags</div>
   
   
 <a href="https://websymphony.net/tags/how-to/" class="tag tag-default tag-how-to">how-to</a>
@@ -727,10 +726,10 @@
 
   
 </div>
-<div class="p-4 bg-white mb-8">
-  <div class="text-xl mb-4">Stay in touch</div>
+<div class="p-4 mb-8 bg-white">
+  <div class="mb-4 text-xl">Stay in touch</div>
   <div class="flex flex-col text-gray-600">
-    <div class="flex align-middle mb-4">
+    <div class="flex mb-4 align-middle">
       <a class="block w-6 h-6 mr-2" target="_blank" rel="noopener nofollow" title="Twitter"
         href="https://twitter.com/websymphony">
         <svg class="fill-current" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"
@@ -764,12 +763,12 @@
   <a class="" href="https://hipcv.com/create-resume?utm_source=https://websymphony.net">
     <img alt="Person looking into mirror and seeing professional version of themselves" class="py-4"
       src="/hipcv/call_to_action.svg">
-    <p class="text-center pt-2 pb-8 text-xl font-extrabold">Looking for a job?</p>
+    <p class="pt-2 pb-8 text-xl font-extrabold text-center">Looking for a job?</p>
     <p class="pb-10 text-gray-700">Use my app <b>hipCV</b> to make resumes and cover letters that are tested and proven
       to
       fit the rules employers are looking for.</p>
   </a>
-  <a class="tag tag-hipcv block text-center font-bold text-lg py-3"
+  <a class="block py-3 text-lg font-bold text-center tag tag-hipcv"
     href="https://hipcv.com/create-resume?utm_source=https://websymphony.net">
     Create your resume now
   </a>

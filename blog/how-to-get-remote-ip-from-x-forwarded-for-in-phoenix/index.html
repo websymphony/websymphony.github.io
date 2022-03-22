@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>How to get remote ip from x-forwarded-for header in Phoenix - Amit Gaur</title>
     <meta name="description" content="In this I explain how to get correct remote ip in phoenix framework from x-forwarded-for. When the server is being proxied through something like nginx." />
-    <meta name="generator" content="Hugo 0.83.1" /><link rel="stylesheet" href="https://websymphony.net/css/styles.min.8c12baff9a161fa813b7e289fb6bb80b0868202e0c913f5a497a27bb55b5dca1.css">
+    <meta name="generator" content="Hugo 0.93.2" />
+
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css"><link rel="stylesheet" href="/static/css/main.cda12e029b6e29672ff756dfdce13f1e20e6f2f930639144245dff7cf6ac706b.css">
+
     <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
     <meta property="og:title" content="How to get remote ip from x-forwarded-for header in Phoenix" />
 <meta property="og:description" content="In this I explain how to get correct remote ip in phoenix framework from x-forwarded-for. When the server is being proxied through something like nginx." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://websymphony.net/blog/how-to-get-remote-ip-from-x-forwarded-for-in-phoenix/" /><meta property="article:section" content="blog" />
-<meta property="article:published_time" content="2020-10-10T00:00:00&#43;00:00" />
-<meta property="article:modified_time" content="2020-10-10T00:00:00&#43;00:00" />
+<meta property="article:published_time" content="2020-10-10T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-10-10T00:00:00+00:00" />
 
 
     <meta name="twitter:card" content="summary"/>
@@ -73,28 +76,28 @@
 <p>To track the visits, we need the real remote IP address of the request. This IP address can then be used by geoip service, to provide the location.</p>
 <p>Since the requests to application server are being proxied, <code>conn.remote_ip</code> address is of the nginx itself and not the original request. The real IP address is also being returned by ngnix, but they come through in the headers <code>x-forwarded-for</code>.</p>
 <p>So, all we need to do is to parse this information from headers. To make it simple, I wrote a small utility module which does just that.</p>
-<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir"><span style="color:#fb660a;font-weight:bold">defmodule</span> Utils.RemoteIp <span style="color:#fb660a;font-weight:bold">do</span>
-  <span style="color:#ff0086;font-weight:bold">@spec</span> get(Plug.Conn.t()) :: binary()
-  <span style="color:#fb660a;font-weight:bold">def</span> get(conn) <span style="color:#fb660a;font-weight:bold">do</span>
-    forwarded_for = conn
-      |&gt; Plug.Conn.get_req_header(<span style="color:#0086d2">&#34;x-forwarded-for&#34;</span>)
-      |&gt; List.first()
-
-    <span style="color:#fb660a;font-weight:bold">if</span> forwarded_for <span style="color:#fb660a;font-weight:bold">do</span>
-      forwarded_for
-      |&gt; String.split(<span style="color:#0086d2">&#34;,&#34;</span>)
-      |&gt; Enum.map(&amp;String.trim/<span style="color:#0086f7;font-weight:bold">1</span>)
-      |&gt; List.first()
-    <span style="color:#fb660a;font-weight:bold">else</span>
-      conn.remote_ip
-      |&gt; <span style="color:#0086d2">:inet_parse</span>.ntoa()
-      |&gt; to_string()
-    <span style="color:#fb660a;font-weight:bold">end</span>
-  <span style="color:#fb660a;font-weight:bold">end</span>
-<span style="color:#fb660a;font-weight:bold">end</span></code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span><span style="color:#fb660a;font-weight:bold">defmodule</span> Utils.RemoteIp <span style="color:#fb660a;font-weight:bold">do</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff0086;font-weight:bold">@spec</span> get(Plug.Conn.t()) :: binary()
+</span></span><span style="display:flex;"><span>  <span style="color:#fb660a;font-weight:bold">def</span> get(conn) <span style="color:#fb660a;font-weight:bold">do</span>
+</span></span><span style="display:flex;"><span>    forwarded_for = conn
+</span></span><span style="display:flex;"><span>      |&gt; Plug.Conn.get_req_header(<span style="color:#0086d2">&#34;x-forwarded-for&#34;</span>)
+</span></span><span style="display:flex;"><span>      |&gt; List.first()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#fb660a;font-weight:bold">if</span> forwarded_for <span style="color:#fb660a;font-weight:bold">do</span>
+</span></span><span style="display:flex;"><span>      forwarded_for
+</span></span><span style="display:flex;"><span>      |&gt; String.split(<span style="color:#0086d2">&#34;,&#34;</span>)
+</span></span><span style="display:flex;"><span>      |&gt; Enum.map(&amp;String.trim/<span style="color:#0086f7;font-weight:bold">1</span>)
+</span></span><span style="display:flex;"><span>      |&gt; List.first()
+</span></span><span style="display:flex;"><span>    <span style="color:#fb660a;font-weight:bold">else</span>
+</span></span><span style="display:flex;"><span>      conn.remote_ip
+</span></span><span style="display:flex;"><span>      |&gt; <span style="color:#0086d2">:inet_parse</span>.ntoa()
+</span></span><span style="display:flex;"><span>      |&gt; to_string()
+</span></span><span style="display:flex;"><span>    <span style="color:#fb660a;font-weight:bold">end</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#fb660a;font-weight:bold">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#fb660a;font-weight:bold">end</span></span></span></code></pre></div>
 <p>Module is quite simple where it takes a <code>conn</code> struct as input and tries to get the value of the IP address out of <code>x-forwarded-for</code> header. If it is able to find it, it returns that, otherwise the original IP address of the request is returned.</p>
 <p>We can use this module anywhere in our controller as long as we have <code>conn</code> struct.</p>
-<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-elixir" data-lang="elixir">Utils.RemoteIp.get(conn)</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-elixir" data-lang="elixir"><span style="display:flex;"><span>Utils.RemoteIp.get(conn)</span></span></code></pre></div>
 <p>There you have it, now you can get the real remote ip from proxied requests without any problems.</p>
 
             <div class="mt-8 rounded-lg bg-purple-50">
@@ -677,13 +680,9 @@
     </div>
     
     <aside class="col-span-3">
-        <div class="p-4 bg-white mb-8">
-  <div class="text-xl mb-4">Published</div>
-  
-  <time class="text-gray-600 text-sm">October 10, 2020</time>
-</div>
-<div class="p-4 bg-white mb-8">
-  <div class="text-xl mb-4">Tags</div>
+        
+<div class="p-4 mb-8 bg-white">
+  <div class="mb-4 text-xl">Tags</div>
   
   
 <a href="https://websymphony.net/tags/how-to/" class="tag tag-default tag-how-to">how-to</a>
@@ -694,10 +693,10 @@
 
   
 </div>
-<div class="p-4 bg-white mb-8">
-  <div class="text-xl mb-4">Stay in touch</div>
+<div class="p-4 mb-8 bg-white">
+  <div class="mb-4 text-xl">Stay in touch</div>
   <div class="flex flex-col text-gray-600">
-    <div class="flex align-middle mb-4">
+    <div class="flex mb-4 align-middle">
       <a class="block w-6 h-6 mr-2" target="_blank" rel="noopener nofollow" title="Twitter"
         href="https://twitter.com/websymphony">
         <svg class="fill-current" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"
@@ -731,12 +730,12 @@
   <a class="" href="https://hipcv.com/create-resume?utm_source=https://websymphony.net">
     <img alt="Person looking into mirror and seeing professional version of themselves" class="py-4"
       src="/hipcv/call_to_action.svg">
-    <p class="text-center pt-2 pb-8 text-xl font-extrabold">Looking for a job?</p>
+    <p class="pt-2 pb-8 text-xl font-extrabold text-center">Looking for a job?</p>
     <p class="pb-10 text-gray-700">Use my app <b>hipCV</b> to make resumes and cover letters that are tested and proven
       to
       fit the rules employers are looking for.</p>
   </a>
-  <a class="tag tag-hipcv block text-center font-bold text-lg py-3"
+  <a class="block py-3 text-lg font-bold text-center tag tag-hipcv"
     href="https://hipcv.com/create-resume?utm_source=https://websymphony.net">
     Create your resume now
   </a>

@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Paraphrasing Tool - Amit Gaur</title>
     <meta name="description" content="In this I discuss the building blocks for the paraphrasing tool." />
-    <meta name="generator" content="Hugo 0.83.1" /><link rel="stylesheet" href="https://websymphony.net/css/styles.min.8c12baff9a161fa813b7e289fb6bb80b0868202e0c913f5a497a27bb55b5dca1.css">
+    <meta name="generator" content="Hugo 0.93.2" />
+
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css"><link rel="stylesheet" href="/static/css/main.cda12e029b6e29672ff756dfdce13f1e20e6f2f930639144245dff7cf6ac706b.css">
+
     <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
     <meta property="og:title" content="Paraphrasing Tool" />
 <meta property="og:description" content="In this I discuss the building blocks for the paraphrasing tool." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://websymphony.net/blog/paraphrasing-tool/" /><meta property="article:section" content="blog" />
-<meta property="article:published_time" content="2020-12-28T00:00:00&#43;00:00" />
-<meta property="article:modified_time" content="2020-12-28T00:00:00&#43;00:00" />
+<meta property="article:published_time" content="2020-12-28T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-12-28T00:00:00+00:00" />
 
 
     <meta name="twitter:card" content="summary"/>
@@ -75,26 +78,26 @@
 <p>The entire front source code is available on <a href="https://github.com/websymphony/paraphrasing-tool">Github</a>.</p>
 <p>The front-end of the project is running on Github pages and uses github actions for automatic deployments of the <code>NextJS</code> website. Which turned out to be little bit of pain to setup.</p>
 <p>Just kept running into one issue after another, whether it be outdated documentation or articles that claimed to be able to help but didn&rsquo;t. Anyhow, following is the github actions workflow file that I ended up with.</p>
-<div class="highlight"><pre style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#080;background-color:#0f140f;font-style:italic"># .github/workflows/integrate.yml</span><span style="color:#888">
-</span><span style="color:#888">
-</span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">name</span>:<span style="color:#888"> </span>Build and Deploy<span style="color:#888">
-</span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">on</span>:<span style="color:#888"> </span>[push]<span style="color:#888">
-</span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">jobs</span>:<span style="color:#888">
-</span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">build-and-deploy</span>:<span style="color:#888">
-</span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">runs-on</span>:<span style="color:#888"> </span>ubuntu-latest<span style="color:#888">
-</span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">steps: - uses: actions/checkout@v2 - uses</span>:<span style="color:#888"> </span>actions/setup-node@v1<span style="color:#888">
-</span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">with</span>:<span style="color:#888">
-</span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">node-version: 12 - run: npm install -g yarn - run: yarn install --frozen-lockfile - run</span>:<span style="color:#888"> </span>yarn build<span style="color:#888">
-</span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">env</span>:<span style="color:#888">
-</span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">NEXT_PUBLIC_BASE_PATH: /your-github-project-name - run</span>:<span style="color:#888"> </span>yarn run export<span style="color:#888">
-</span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">env</span>:<span style="color:#888">
-</span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">NEXT_PUBLIC_BASE_PATH: /your-github-project-name - run: touch ./out/.nojekyll - uses</span>:<span style="color:#888"> </span>JamesIves/github-pages-deploy-action@3.5.9<span style="color:#888">
-</span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">env</span>:<span style="color:#888">
-</span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">ACTIONS_ALLOW_UNSECURE_COMMANDS</span>:<span style="color:#888"> </span><span style="color:#0086d2">&#39;true&#39;</span><span style="color:#888">
-</span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">with</span>:<span style="color:#888">
-</span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">GITHUB_TOKEN</span>:<span style="color:#888"> </span>${{ secrets.GITHUB_TOKEN }}<span style="color:#888">
-</span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">BRANCH</span>:<span style="color:#888"> </span>gh-pages<span style="color:#888"> </span><span style="color:#080;background-color:#0f140f;font-style:italic"># The branch the action should deploy to.</span><span style="color:#888">
-</span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">FOLDER</span>:<span style="color:#888"> </span>out<span style="color:#888"> </span><span style="color:#080;background-color:#0f140f;font-style:italic"># The folder the action should deploy.</span></code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#fff;background-color:#111;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#080;background-color:#0f140f;font-style:italic"># .github/workflows/integrate.yml</span><span style="color:#888">
+</span></span></span><span style="display:flex;"><span><span style="color:#888">
+</span></span></span><span style="display:flex;"><span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">name</span>:<span style="color:#888"> </span>Build and Deploy<span style="color:#888">
+</span></span></span><span style="display:flex;"><span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">on</span>:<span style="color:#888"> </span>[push]<span style="color:#888">
+</span></span></span><span style="display:flex;"><span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">jobs</span>:<span style="color:#888">
+</span></span></span><span style="display:flex;"><span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">build-and-deploy</span>:<span style="color:#888">
+</span></span></span><span style="display:flex;"><span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">runs-on</span>:<span style="color:#888"> </span>ubuntu-latest<span style="color:#888">
+</span></span></span><span style="display:flex;"><span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">steps: - uses: actions/checkout@v2 - uses</span>:<span style="color:#888"> </span>actions/setup-node@v1<span style="color:#888">
+</span></span></span><span style="display:flex;"><span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">with</span>:<span style="color:#888">
+</span></span></span><span style="display:flex;"><span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">node-version: 12 - run: npm install -g yarn - run: yarn install --frozen-lockfile - run</span>:<span style="color:#888"> </span>yarn build<span style="color:#888">
+</span></span></span><span style="display:flex;"><span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">env</span>:<span style="color:#888">
+</span></span></span><span style="display:flex;"><span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">NEXT_PUBLIC_BASE_PATH: /your-github-project-name - run</span>:<span style="color:#888"> </span>yarn run export<span style="color:#888">
+</span></span></span><span style="display:flex;"><span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">env</span>:<span style="color:#888">
+</span></span></span><span style="display:flex;"><span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">NEXT_PUBLIC_BASE_PATH: /your-github-project-name - run: touch ./out/.nojekyll - uses</span>:<span style="color:#888"> </span>JamesIves/github-pages-deploy-action@3.5.9<span style="color:#888">
+</span></span></span><span style="display:flex;"><span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">env</span>:<span style="color:#888">
+</span></span></span><span style="display:flex;"><span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">ACTIONS_ALLOW_UNSECURE_COMMANDS</span>:<span style="color:#888"> </span><span style="color:#0086d2">&#39;true&#39;</span><span style="color:#888">
+</span></span></span><span style="display:flex;"><span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">with</span>:<span style="color:#888">
+</span></span></span><span style="display:flex;"><span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">GITHUB_TOKEN</span>:<span style="color:#888"> </span>${{ secrets.GITHUB_TOKEN }}<span style="color:#888">
+</span></span></span><span style="display:flex;"><span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">BRANCH</span>:<span style="color:#888"> </span>gh-pages<span style="color:#888"> </span><span style="color:#080;background-color:#0f140f;font-style:italic"># The branch the action should deploy to.</span><span style="color:#888">
+</span></span></span><span style="display:flex;"><span><span style="color:#888"></span><span style="color:#fb660a;font-weight:bold">FOLDER</span>:<span style="color:#888"> </span>out<span style="color:#888"> </span><span style="color:#080;background-color:#0f140f;font-style:italic"># The folder the action should deploy.</span></span></span></code></pre></div>
 <p>The backend of the tool is powered by the <code>FastAPI</code> server. The project uses <code>Spacy</code> for figuring out the sentences out of the phrases and uses <code>Transformers</code> for the paraphrasing of individual sentences. The parameters for the tranformers have been adjusted manually after lot of trial and error.</p>
 <p>Please give <a href="https://websymphony.net/paraphrasing-tool">paraphrasing tool</a> a go and let me know what you think of it.</p>
 
@@ -678,13 +681,9 @@
     </div>
     
     <aside class="col-span-3">
-        <div class="p-4 bg-white mb-8">
-  <div class="text-xl mb-4">Published</div>
-  
-  <time class="text-gray-600 text-sm">December 28, 2020</time>
-</div>
-<div class="p-4 bg-white mb-8">
-  <div class="text-xl mb-4">Tags</div>
+        
+<div class="p-4 mb-8 bg-white">
+  <div class="mb-4 text-xl">Tags</div>
   
   
 <a href="https://websymphony.net/tags/nextjs/" class="tag tag-default tag-nextjs">nextjs</a>
@@ -695,10 +694,10 @@
 
   
 </div>
-<div class="p-4 bg-white mb-8">
-  <div class="text-xl mb-4">Stay in touch</div>
+<div class="p-4 mb-8 bg-white">
+  <div class="mb-4 text-xl">Stay in touch</div>
   <div class="flex flex-col text-gray-600">
-    <div class="flex align-middle mb-4">
+    <div class="flex mb-4 align-middle">
       <a class="block w-6 h-6 mr-2" target="_blank" rel="noopener nofollow" title="Twitter"
         href="https://twitter.com/websymphony">
         <svg class="fill-current" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"
@@ -732,12 +731,12 @@
   <a class="" href="https://hipcv.com/create-resume?utm_source=https://websymphony.net">
     <img alt="Person looking into mirror and seeing professional version of themselves" class="py-4"
       src="/hipcv/call_to_action.svg">
-    <p class="text-center pt-2 pb-8 text-xl font-extrabold">Looking for a job?</p>
+    <p class="pt-2 pb-8 text-xl font-extrabold text-center">Looking for a job?</p>
     <p class="pb-10 text-gray-700">Use my app <b>hipCV</b> to make resumes and cover letters that are tested and proven
       to
       fit the rules employers are looking for.</p>
   </a>
-  <a class="tag tag-hipcv block text-center font-bold text-lg py-3"
+  <a class="block py-3 text-lg font-bold text-center tag tag-hipcv"
     href="https://hipcv.com/create-resume?utm_source=https://websymphony.net">
     Create your resume now
   </a>
